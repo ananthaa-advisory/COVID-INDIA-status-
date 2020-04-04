@@ -1,0 +1,37 @@
+#!/usr/bin/python
+import json
+import os
+import requests
+webhook = 'https://hooks.slack.com/services/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'
+
+dates = []
+confirmeds = []
+deaths = []
+recovereds = []
+results = []
+reports = os.system('curl https://pomber.github.io/covid19/timeseries.json | python -m json.tool | more > data.json')
+with open('data.json') as json_file:
+    data = json.load(json_file)
+    for p in data['India']:
+        date = p['date']
+        confirmed = p['confirmed']
+        death = p['deaths']
+        recovered = p['recovered']
+        dates.append(date)
+        confirmeds.append(confirmed)
+#        death.append(deaths)
+        recovereds.append(recovered)
+
+for i in range(0,len(dates)):
+    if i == (len(dates) - 1):
+        a = str(dates[i])
+        
+        print('The latest news on COVID - 19 published on - {}'.format(a))
+        slack_msg = {'text':"INDIA's COVID status as on -{} ".format(a)}
+        requests.post(webhook,data=json.dumps(slack_msg))
+for i in range(0,len(confirmeds)):
+    if i == (len(confirmeds) - 1):
+        b = str(confirmeds[i])
+        slack_msg = {'text':"The confirmed cases are - {}".format(b)}
+        requests.post(webhook,data=json.dumps(slack_msg))
+        print('The confirmed cases so far on COVID - 19 in INDIA are -{}'.format(b))
